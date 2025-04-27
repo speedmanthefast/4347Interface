@@ -90,6 +90,7 @@ class Restaurant:
         # Create new window
         new_win = tk.Toplevel(self.root)
         new_win.title("Update tuple")
+        new_win.geometry("300x200")
 
         # Dictionary to store entry boxes
         entry_widgets = {}
@@ -114,6 +115,8 @@ class Restaurant:
             self.cursor.execute(query, (key_entry.get(),))
             result = self.cursor.fetchone()
             if result:
+                height = max(len(columns) * 50, 200)
+                new_win.geometry(f"300x{height + 20}")
 
                 # Create a label and entry for each attribute
                 count = 0
@@ -149,7 +152,7 @@ class Restaurant:
                     tk.messagebox.showinfo("Success", f"Record updated in {table_name}!")
                     new_win.destroy()
 
-                submit_button = tk.Button(new_win, text="Add Record", command=submit)
+                submit_button = tk.Button(new_win, text="Update Record", command=submit)
                 submit_button.pack()
             else:
                 messagebox.showinfo("Error", "Tuple not found")
@@ -162,6 +165,7 @@ class Restaurant:
         # Create new window
         new_win = tk.Toplevel(self.root)
         new_win.title("Delete tuple")
+        new_win.geometry("300x200")
 
         # Get the list of columns from the chosen table
         self.cursor.execute(f"DESCRIBE `{table_name}`")

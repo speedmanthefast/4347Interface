@@ -5,7 +5,7 @@ import restaurant
 
 R = restaurant.Restaurant()
 
-R.find_restaurant()
+R.display_main_screen()
 
 R.root.mainloop()
 
