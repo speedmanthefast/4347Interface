@@ -9,3 +9,11 @@ R.display_main_screen()
 
 R.root.mainloop()
 
+# Shit to add maybe
+#     Additional functions:
+#         Seat customer
+#         Process transaction
+#     Styling
+#     Input validation
+#     Input auto drop downs
+#     NULL value option
