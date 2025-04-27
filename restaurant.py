@@ -3,7 +3,6 @@ import mysql.connector
 from tkinter import messagebox
 
 class Restaurant:
-    #elements = []
 
     def __init__(self):
         self.RID = None
@@ -159,8 +158,40 @@ class Restaurant:
         #height = max(len(columns) * 50, 200)
         #new_win.geometry(f"300x{height}")
 
+    def delete_tuple(self, table_name):
+        # Create new window
+        new_win = tk.Toplevel(self.root)
+        new_win.title("Delete tuple")
 
+        # Get the list of columns from the chosen table
+        self.cursor.execute(f"DESCRIBE `{table_name}`")
+        columns = self.cursor.fetchall()
 
+        # Get the name of the first column
+        col_key = columns[0][0]
+
+        # Create a label and entry box for searching by key value
+        key_label = tk.Label(new_win, text=col_key)
+        key_label.pack()
+        key_entry = tk.Entry(new_win)
+        key_entry.pack()
+
+        # Function to search for the value inside key_entry
+        def find_tuple():
+            query = f"SELECT * FROM `{table_name}` WHERE {col_key} = %s"
+            self.cursor.execute(query, (key_entry.get(),))
+            result = self.cursor.fetchone()
+
+            if result:
+                sql = f"DELETE FROM `{table_name}` WHERE `{col_key}` = %s"
+                self.cursor.execute(sql, (key_entry.get(),))
+                self.db.commit()
+                tk.messagebox.showinfo("Success", f"Record deleted from {table_name}!")
+                new_win.destroy()
+
+            else:
+                messagebox.showinfo("Error", "Tuple not found")
+        tk.Button(new_win, text="Delete", command=find_tuple).pack()
 
     def add_customer(self, phone):
         new_win = tk.Toplevel(self.root)
@@ -233,6 +264,24 @@ class Restaurant:
         # Add tuple button
         tk.Button(self.root, text="Update Tuple", command=lambda: self.update_tuple(variable.get())).grid(row=row, column=2, sticky='w')
 
+    def display_CRUD_delete(self, row):
+        add_label = tk.Label(self.root, text="[DELETE TUPLE] Select Table:").grid(row=row, column=0, sticky='w')
+
+        self.cursor.execute("SHOW TABLES")
+        tables = self.cursor.fetchall()
+        tables_f = [table[0] for table in tables]
+
+        # Tkinter variable to store the selected value
+        variable = tk.StringVar()
+        variable.set(tables_f[0])  # Set the default option
+
+        # Create the drop-down menu
+        dropdown = tk.OptionMenu(self.root, variable, *tables_f)
+        dropdown.grid(row=row, column=1, sticky='w')
+
+        # Add tuple button
+        tk.Button(self.root, text="Delete Tuple", command=lambda: self.delete_tuple(variable.get())).grid(row=row, column=2, sticky='w')
+
     def display_customer_lookup(self, row):
         phone_label = tk.Label(self.root, text="[CUSTOMER LOOKUP] Phone Number:").grid(row=row, column=0)
         phone_entry = tk.Entry(self.root)
@@ -242,7 +291,8 @@ class Restaurant:
     def display_main_screen(self):
         self.display_CRUD_add(0)
         self.display_CRUD_update(1)
-        self.display_customer_lookup(2)
+        self.display_CRUD_delete(2)
+        self.display_customer_lookup(3)
 
 
 
