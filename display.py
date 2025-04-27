@@ -4,7 +4,7 @@ from tkinter import messagebox
 
 def display_CRUD_add(self, row):
 
-    add_label = tk.Label(self.root, text="[ADD TUPLE] Select Table:").grid(row=row, column=0, sticky='w')
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -16,14 +16,14 @@ def display_CRUD_add(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=1, sticky='w')
+    dropdown.grid(row=row, column=2, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="Add Tuple", command=lambda: self.add_tuple(variable.get())).grid(row=row, column=2, sticky='w')
+    tk.Button(self.root, text="Add Tuple", command=lambda: self.add_tuple(variable.get())).grid(row=row, column=3, sticky="w")
 
 def display_CRUD_update(self, row):
 
-    add_label = tk.Label(self.root, text="[UPDATE TUPLE] Select Table:").grid(row=row, column=0, sticky='w')
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -35,13 +35,13 @@ def display_CRUD_update(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=1, sticky='w')
+    dropdown.grid(row=row, column=2, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="Update Tuple", command=lambda: self.update_tuple(variable.get())).grid(row=row, column=2, sticky='w')
+    tk.Button(self.root, text="Update Tuple", command=lambda: self.update_tuple(variable.get())).grid(row=row, column=3, sticky="w")
 
 def display_CRUD_delete(self, row):
-    add_label = tk.Label(self.root, text="[DELETE TUPLE] Select Table:").grid(row=row, column=0, sticky='w')
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -53,13 +53,13 @@ def display_CRUD_delete(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=1, sticky='w')
+    dropdown.grid(row=row, column=2, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="Delete Tuple", command=lambda: self.delete_tuple(variable.get())).grid(row=row, column=2, sticky='w')
+    tk.Button(self.root, text="Delete Tuple", command=lambda: self.delete_tuple(variable.get())).grid(row=row, column=3, sticky="w")
 
 def display_CRUD_viewtable(self, row):
-    add_label = tk.Label(self.root, text="[VIEW TABLE] Select Table:").grid(row=row, column=0, sticky='w')
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -71,20 +71,20 @@ def display_CRUD_viewtable(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=1, sticky='w')
+    dropdown.grid(row=row, column=2, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="View Table", command=lambda: self.view_table(variable.get())).grid(row=row, column=2, sticky='w')
+    tk.Button(self.root, text="View Table", command=lambda: self.view_table(variable.get())).grid(row=row, column=3, sticky="w")
 
 def display_customer_lookup(self, row):
-    phone_label = tk.Label(self.root, text="[CUSTOMER LOOKUP] Phone Number:").grid(row=row, column=0)
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=1)
     phone_entry = tk.Entry(self.root)
-    phone_entry.grid(row=row, column=1)
-    tk.Button(self.root, text="Search", command=lambda: self.lookup_customer(phone_entry)).grid(row=row, column=2)
+    phone_entry.grid(row=row, column=2)
+    tk.Button(self.root, text="Search", command=lambda: self.lookup_customer(phone_entry)).grid(row=row, column=3)
 
 def display_main_screen(self):
-    self.display_CRUD_add(0)
-    self.display_CRUD_update(1)
-    self.display_CRUD_delete(2)
-    self.display_CRUD_viewtable(3)
-    self.display_customer_lookup(4)
+    self.display_CRUD_add(1)
+    self.display_CRUD_update(2)
+    self.display_CRUD_delete(3)
+    self.display_CRUD_viewtable(4)
+    self.display_customer_lookup(6)
