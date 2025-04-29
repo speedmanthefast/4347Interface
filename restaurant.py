@@ -22,6 +22,8 @@ class Restaurant:
     def clear_screen(self, window):
         for element in window.winfo_children():
             element.destroy()
+        if window is self.root:
+            self.nextRow = 0
 
     def setRID(self, RID):
         self.RID = RID

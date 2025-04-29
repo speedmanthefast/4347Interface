@@ -12,7 +12,12 @@ R.root.mainloop()
 # Shit to add maybe
 #     Additional functions:
 #         Seat customer
-#         Process transaction
+#         Take order
+#         'Cook' Food
+#         Serve Order
+#         Clean table
+#         Check Status of robots, check stock of ingredients
+#     Improve input method for transaction processing
 #     Styling
 #     Input validation
 #     Input auto drop downs

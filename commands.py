@@ -35,8 +35,17 @@ def add_tuple(self, table_name):
             fields.append(col_name)
             values.append(entry.get())
 
+        def format(input):
+            if input.lower() in ['none', 'null']:
+                return None
+            else:
+                return input
+
+        values_f = list(map(format, values))
+
         sql = f"INSERT INTO `{table_name}` ({', '.join(fields)}) VALUES ({', '.join(['%s']*len(fields))})"
-        self.cursor.execute(sql, values)
+        print(sql, values_f)
+        self.cursor.execute(sql, values_f)
         self.db.commit()
         tk.messagebox.showinfo("Success", f"Record added to {table_name}!")
 
@@ -231,11 +240,103 @@ def lookup_customer(self, phone_entry):
 
 def process_transaction(self):
     new_win = tk.Toplevel(self.root)
-    new_win.title("Add New Customer")
+    new_win.title("Process Transaction")
     new_win.geometry("300x200")
+    table_name = 'Transaction'
+    col_key = 'Transaction_id'
+
+    def find_order(order_no):
+        query = f"SELECT * FROM `Order` WHERE Order_no = %s"
+        self.cursor.execute(query, (ordernoEntry.get(),))
+        result = self.cursor.fetchone()
+        if not result:
+            messagebox.showinfo("Order Not Found", "Use the view orders by phone number button to see a list of orders")
+            return
+
+        self.clear_screen(new_win)
+
+        cost_query = f"SELECT o.Order_no, SUM(f.Price) AS total_food_cost FROM `Order` o JOIN Food f ON o.Order_no = f.Food_Order_no WHERE o.Order_no = {order_no}"
+        self.cursor.execute(cost_query)
+        total_cost = self.cursor.fetchone()
+        tk.Label(new_win, text=f"Order Total: ${total_cost[1]}").pack()
+
+        self.cursor.execute(f"DESCRIBE `{table_name}`")
+        columns = self.cursor.fetchall()
+        height = max(len(columns) * 50, 200)
+        new_win.geometry(f"300x{height}")
+
+        entry_widgets = {}
+
+        for col in columns:
+            col_name = col[0]
+            # Skip auto-increment ID
+            if 'auto_increment' in col[-1]:
+                continue
+
+            label = tk.Label(new_win, text=col_name)
+            label.pack()
+
+            entry = tk.Entry(new_win)
+            entry.pack()
+
+            entry_widgets[col_name] = entry
+
+        def submit():
+            values = []
+            fields = []
+            for col_name, entry in entry_widgets.items():
+                fields.append(col_name)
+                values.append(entry.get())
+
+            sql = f"INSERT INTO `{table_name}` ({', '.join(fields)}) VALUES ({', '.join(['%s']*len(fields))})"
+            self.cursor.execute(sql, values)
+            self.db.commit()
+            tk.messagebox.showinfo("Success", f"Record added to {table_name}!")
+
+
+        submit_button = tk.Button(new_win, text="Add Record", command=submit)
+        submit_button.pack()
+
+    # Function for viewing order by phone_number
+    def view(phone_num):
+        table_name = 'Order'
+
+        # Create new window
+        new_win2 = tk.Toplevel(self.root)
+        new_win2.title(f"{table_name} View")
+        new_win2.geometry("800x600")
+
+        # Get the list of columns from the chosen table
+        self.cursor.execute(f"DESCRIBE `{table_name}`")
+        columns = self.cursor.fetchall()
+
+        # Create the Treeview widget
+        tree = ttk.Treeview(new_win2)
+        tree.pack(padx=20, pady=20)
+
+        col_names_list = []
+        for col in columns:
+            col_names_list.append(col[0])
+
+        tree["columns"] = col_names_list
+        tree["show"] = "headings"
+
+        for name in col_names_list:
+            tree.heading(name, text=name)
+
+        self.cursor.execute(f"SELECT * FROM `{table_name}` WHERE Order_Phone_number = {phone_num}")
+        rows = self.cursor.fetchall()
+
+        for row in rows:
+            tree.insert("", "end", values=row)
 
     # Search for order
-
-    # Get all foods associated with order and aggregate cost
-    # Get payment method and 'confirm' it (do nothing)
-    # Create transaction tuple
+    tk.Label(new_win, text="Enter Order Number").pack()
+    ordernoEntry = tk.Entry(new_win)
+    ordernoEntry.pack()
+    tk.Button(new_win, text="Search", command=lambda: find_order(ordernoEntry.get())).pack()
+    tk.Label(new_win, text="").pack(pady=10)
+    tk.Label(new_win, text="Enter Phone Number").pack()
+    phonenoEntry = tk.Entry(new_win)
+    phonenoEntry.pack()
+    tk.Button(new_win, text="View Orders by Phone Number", command=lambda: view(phonenoEntry.get())).pack()
