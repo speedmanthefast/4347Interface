@@ -233,3 +233,9 @@ def process_transaction(self):
     new_win = tk.Toplevel(self.root)
     new_win.title("Add New Customer")
     new_win.geometry("300x200")
+
+    # Search for order
+
+    # Get all foods associated with order and aggregate cost
+    # Get payment method and 'confirm' it (do nothing)
+    # Create transaction tuple
