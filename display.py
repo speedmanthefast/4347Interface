@@ -2,28 +2,9 @@ import tkinter as tk
 import mysql.connector
 from tkinter import messagebox
 
-def display_CRUD_add(self, row):
+def display_CRUD_add(self, row, col):
 
-    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
-
-    self.cursor.execute("SHOW TABLES")
-    tables = self.cursor.fetchall()
-    tables_f = [table[0] for table in tables]
-
-    # Tkinter variable to store the selected value
-    variable = tk.StringVar()
-    variable.set(tables_f[0])  # Set the default option
-
-    # Create the drop-down menu
-    dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=2, sticky="w")
-
-    # Add tuple button
-    tk.Button(self.root, text="Add Tuple", command=lambda: self.add_tuple(variable.get())).grid(row=row, column=3, sticky="w")
-
-def display_CRUD_update(self, row):
-
-    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=col, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -35,13 +16,14 @@ def display_CRUD_update(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=2, sticky="w")
+    dropdown.grid(row=row, column=col+1, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="Update Tuple", command=lambda: self.update_tuple(variable.get())).grid(row=row, column=3, sticky="w")
+    tk.Button(self.root, text="Add Tuple", command=lambda: self.add_tuple(variable.get())).grid(row=row, column=col+2, sticky="w")
 
-def display_CRUD_delete(self, row):
-    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
+def display_CRUD_update(self, row, col):
+
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=col, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -53,13 +35,13 @@ def display_CRUD_delete(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=2, sticky="w")
+    dropdown.grid(row=row, column=col+1, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="Delete Tuple", command=lambda: self.delete_tuple(variable.get())).grid(row=row, column=3, sticky="w")
+    tk.Button(self.root, text="Update Tuple", command=lambda: self.update_tuple(variable.get())).grid(row=row, column=col+2, sticky="w")
 
-def display_CRUD_viewtable(self, row):
-    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=1, sticky="e")
+def display_CRUD_delete(self, row, col):
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=col, sticky="e")
 
     self.cursor.execute("SHOW TABLES")
     tables = self.cursor.fetchall()
@@ -71,20 +53,51 @@ def display_CRUD_viewtable(self, row):
 
     # Create the drop-down menu
     dropdown = tk.OptionMenu(self.root, variable, *tables_f)
-    dropdown.grid(row=row, column=2, sticky="w")
+    dropdown.grid(row=row, column=col+1, sticky="w")
 
     # Add tuple button
-    tk.Button(self.root, text="View Table", command=lambda: self.view_table(variable.get())).grid(row=row, column=3, sticky="w")
+    tk.Button(self.root, text="Delete Tuple", command=lambda: self.delete_tuple(variable.get())).grid(row=row, column=col+2, sticky="w")
 
-def display_customer_lookup(self, row):
-    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=1)
+def display_CRUD_viewtable(self, row, col):
+    add_label = tk.Label(self.root, text="Select Table:").grid(row=row, column=col, sticky="e")
+
+    self.cursor.execute("SHOW TABLES")
+    tables = self.cursor.fetchall()
+    tables_f = [table[0] for table in tables]
+
+    # Tkinter variable to store the selected value
+    variable = tk.StringVar()
+    variable.set(tables_f[0])  # Set the default option
+
+    # Create the drop-down menu
+    dropdown = tk.OptionMenu(self.root, variable, *tables_f)
+    dropdown.grid(row=row, column=col+1, sticky="w")
+
+    # Add tuple button
+    tk.Button(self.root, text="View Table", command=lambda: self.view_table(variable.get())).grid(row=row, column=col+2, sticky="w")
+
+def display_customer_lookup(self, row, col):
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=col)
     phone_entry = tk.Entry(self.root)
-    phone_entry.grid(row=row, column=2)
-    tk.Button(self.root, text="Search", command=lambda: self.lookup_customer(phone_entry)).grid(row=row, column=3)
+    phone_entry.grid(row=row, column=col+1)
+    tk.Button(self.root, text="Search", command=lambda: self.lookup_customer(phone_entry)).grid(row=row, column=col+2)
+
+def display_process_transaction(self, row, col):
+    tk.Button(self.root, text="Begin", command=lambda: self.process_transaction()).grid(row=row, column=col, columnspan=3)
 
 def display_main_screen(self):
-    self.display_CRUD_add(1)
-    self.display_CRUD_update(2)
-    self.display_CRUD_delete(3)
-    self.display_CRUD_viewtable(4)
-    self.display_customer_lookup(6)
+    self.display_weight_col(0)
+    self.display_weight_col(5)
+    self.display_pad_row()
+    self.display_heading("CRUD Functions")
+    self.display_item(display_CRUD_add)
+    self.display_item(display_CRUD_update)
+    self.display_item(display_CRUD_delete)
+    self.display_item(display_CRUD_viewtable)
+    self.display_pad_row()
+    self.display_heading("Customer Lookup")
+    self.display_item(display_customer_lookup)
+    self.display_pad_row()
+    self.display_heading("Process Transaction")
+    self.display_item(display_process_transaction)
+    self.display_weight_row(weight=2)

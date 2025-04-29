@@ -98,12 +98,21 @@ def update_tuple(self, table_name):
             # Function call for submitting the update parameters
             def submit():
 
-                # Get the values stored in each entry table
-                values = []
-                for col_name, entry in entry_widgets.items():
-                    values.append(entry.get())
+                def format(input):
+                    if input.lower() in ['none', 'null']:
+                        return 'NULL'
+                    else:
+                        return f"'{input}'"
 
-                sql = f"UPDATE {table_name} SET {', '.join(f"{attr[0]} = \'{value}\'" for attr, value in zip(columns, values))} WHERE {col_key} = {key_entry.get()}"
+                # Get the values stored in each entry table
+                init_values = []
+                for col_name, entry in entry_widgets.items():
+                    init_values.append(entry.get())
+
+                values = list(map(format, init_values))
+
+
+                sql = f"UPDATE {table_name} SET {', '.join(f"{attr[0]} = {value}" for attr, value in zip(columns, values))} WHERE {col_key} = {key_entry.get()}"
                 print(sql)
                 self.cursor.execute(sql)
                 self.db.commit()
@@ -219,3 +228,8 @@ def lookup_customer(self, phone_entry):
         messagebox.showinfo("Customer Found", f"Name: {result[1]}\nStatus: {result[2]}\nTable: {result[4]}")
     else:
         self.add_customer(phone)
+
+def process_transaction(self):
+    new_win = tk.Toplevel(self.root)
+    new_win.title("Add New Customer")
+    new_win.geometry("300x200")

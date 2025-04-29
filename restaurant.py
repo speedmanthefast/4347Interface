@@ -15,13 +15,9 @@ class Restaurant:
                 database="byte_a_burger")
         self.cursor = self.db.cursor()
         self.root = tk.Tk()
-        self.root.grid_rowconfigure(0, weight=1)
-        self.root.grid_rowconfigure(5, weight=1)
-        self.root.grid_rowconfigure(7, weight=1)
-        self.root.grid_columnconfigure(0, weight=1)
-        self.root.grid_columnconfigure(5, weight=1)
         self.root.title("Restaurant Manager")
         self.root.geometry("800x600")
+        self.nextRow = 0
 
     def clear_screen(self, window):
         for element in window.winfo_children():
@@ -58,6 +54,7 @@ class Restaurant:
     view_table = commands.view_table
     add_customer = commands.add_customer
     lookup_customer = commands.lookup_customer
+    process_transaction = commands.process_transaction
 
     display_CRUD_add = display.display_CRUD_add
     display_CRUD_update = display.display_CRUD_update
@@ -65,5 +62,38 @@ class Restaurant:
     display_CRUD_viewtable = display.display_CRUD_viewtable
     display_customer_lookup = display.display_customer_lookup
     display_main_screen = display.display_main_screen
+    display_process_transaction=display.display_process_transaction
+
+    def display_item(self, func, row=None, col=1):
+        if row is None:
+            row = self.nextRow
+        func(self, row, col)
+        if row == self.nextRow:
+            self.nextRow = self.nextRow + 1
+
+    def display_weight_row(self, row=None, weight=1):
+        if row is None:
+            row = self.nextRow
+        self.root.grid_rowconfigure(row, weight=weight)
+        if row == self.nextRow:
+            self.nextRow = self.nextRow + 1
+
+    def display_pad_row(self, row=None, minsize=20):
+        if row is None:
+            row = self.nextRow
+        self.root.grid_rowconfigure(row, minsize=minsize)
+        if row == self.nextRow:
+            self.nextRow = self.nextRow + 1
+
+    def display_weight_col(self, col, weight=1):
+        self.root.grid_columnconfigure(col, weight=weight)
+
+    def display_heading(self, text, size=10, row=None, col=1):
+        if row is None:
+            row = self.nextRow
+        tk.Label(self.root, text=text, font=("Arial", size, "bold")).grid(row=row, column=col, columnspan=3, pady=10)
+        if row == self.nextRow:
+            self.nextRow = self.nextRow + 1
+
 
 
