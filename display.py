@@ -101,6 +101,24 @@ def display_seat_customer(self, row, col):
 
     tk.Button(self.root, text="Search", command=submit).grid(row=row, column=col+2)
 
+def display_cook_food(self, row, col):
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=col)
+    phone_entry = tk.Entry(self.root)
+    phone_entry.grid(row=row, column=col+1)
+    tk.Button(self.root, text="Search", command=lambda: self.cook_food(phone_entry.get())).grid(row=row, column=col+2)
+
+def display_serve_order(self, row, col):
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=col)
+    phone_entry = tk.Entry(self.root)
+    phone_entry.grid(row=row, column=col+1)
+    tk.Button(self.root, text="Search", command=lambda: self.serve_order(phone_entry.get())).grid(row=row, column=col+2)
+
+def display_unseat_customer(self, row, col):
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=col)
+    phone_entry = tk.Entry(self.root)
+    phone_entry.grid(row=row, column=col+1)
+    tk.Button(self.root, text="Search", command=lambda: self.unseat_customer(phone_entry.get())).grid(row=row, column=col+2)
+
 def display_main_screen(self):
     self.display_weight_col(0)
     self.display_weight_col(5)
@@ -114,9 +132,18 @@ def display_main_screen(self):
     self.display_heading("Customer Lookup")
     self.display_item(display_customer_lookup)
     self.display_pad_row()
-    self.display_heading("Process Transaction")
-    self.display_item(display_process_transaction)
-    self.display_pad_row()
     self.display_heading("Seat Customer")
     self.display_item(display_seat_customer)
+    self.display_pad_row()
+    self.display_heading("Cook Food")
+    self.display_item(display_cook_food)
+    self.display_pad_row()
+    self.display_heading("Serve Customer")
+    self.display_item(display_serve_order)
+    self.display_pad_row()
+    self.display_heading("Clean Table")
+    self.display_item(display_unseat_customer)
+    self.display_pad_row()
+    self.display_heading("Process Transaction")
+    self.display_item(display_process_transaction)
     self.display_weight_row(weight=2)

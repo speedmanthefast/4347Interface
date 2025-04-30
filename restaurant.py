@@ -16,7 +16,7 @@ class Restaurant:
         self.cursor = self.db.cursor()
         self.root = tk.Tk()
         self.root.title("Restaurant Manager")
-        self.root.geometry("800x600")
+        self.root.geometry("800x800")
         self.nextRow = 0
 
     def clear_screen(self, window):
@@ -58,6 +58,9 @@ class Restaurant:
     lookup_customer = commands.lookup_customer
     seat_customer = commands.seat_customer
     process_transaction = commands.process_transaction
+    cook_food = commands.cook_food
+    serve_order = commands.serve_order
+    unseat_customer = commands.unseat_customer
 
     display_CRUD_add = display.display_CRUD_add
     display_CRUD_update = display.display_CRUD_update
@@ -67,6 +70,9 @@ class Restaurant:
     display_main_screen = display.display_main_screen
     display_process_transaction=display.display_process_transaction
     display_seat_customer = display.display_seat_customer
+    display_cook_food = display.display_cook_food
+    display_serve_order = display.display_serve_order
+    display_unseat_customer = display.display_unseat_customer
 
     def display_item(self, func, row=None, col=1):
         if row is None:

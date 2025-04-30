@@ -48,6 +48,7 @@ def add_tuple(self, table_name):
         self.cursor.execute(sql, values_f)
         self.db.commit()
         tk.messagebox.showinfo("Success", f"Record added to {table_name}!")
+        new_win.destroy()
 
     submit_button = tk.Button(new_win, text="Add Record", command=submit)
     submit_button.pack()
@@ -121,7 +122,7 @@ def update_tuple(self, table_name):
                 values = list(map(format, init_values))
 
 
-                sql = f"UPDATE {table_name} SET {', '.join(f"{attr[0]} = {value}" for attr, value in zip(columns, values))} WHERE {col_key} = {key_entry.get()}"
+                sql = f"UPDATE `{table_name}` SET {', '.join(f"{attr[0]} = {value}" for attr, value in zip(columns, values))} WHERE {col_key} = {key_entry.get()}"
                 print(sql)
                 self.cursor.execute(sql)
                 self.db.commit()
@@ -384,17 +385,49 @@ def seat_customer(self, phone_num):
     def seat(table_no):
         self.cursor.execute(f"UPDATE Customer SET Cus_Table_no = {table_no}, Status = 'seated' WHERE Phone_number = {phone_num}")
         self.cursor.execute(f"UPDATE Table_Details SET Status = 'Occupied', Seating_Capacity = Seating_Capacity + 1 WHERE Table_no = {table_no}")
+        self.db.commit()
         messagebox.showinfo("Customer Seated!", "Successfully Updated Customer and Table_Details")
         new_win.destroy()
 
     tk.Button(new_win, text="Seat Customer", command=lambda: seat(tablenoEntry.get())).pack()
 
 
-def take_order(self):
-    return None
-def cook_food(self):
-    return None
-def serve_order(self):
-    return None
-def clean_table(self):
-    return None
+def cook_food(self, phone_number):
+    query = f"SELECT * FROM `Order` WHERE Order_Phone_number = %s AND Status = 'Received'"
+    self.cursor.execute(query, (phone_number,))
+    result = self.cursor.fetchone()
+    if not result:
+        messagebox.showinfo("Order Not Found", "Check if the phone number is valid and if this customer has placed an order")
+        return
+    query2 = f"UPDATE `Order` SET Status = 'Ready' WHERE Order_Phone_number = %s AND Status = 'Received'"
+    messagebox.showinfo("Order Set to Ready!", "Successfully Updated Order")
+    self.cursor.execute(query2, (phone_number,))
+    self.db.commit()
+
+def serve_order(self, phone_number):
+    query = f"SELECT * FROM `Order` WHERE Order_Phone_number = %s AND Status = 'Ready'"
+    self.cursor.execute(query, (phone_number,))
+    result = self.cursor.fetchone()
+    if not result:
+        messagebox.showinfo("Order Not Found", "Check if the phone number is valid and if this customer's order exists and is ready")
+        return
+    query2 = f"UPDATE `Order` SET Status = 'Served' WHERE Order_Phone_number = %s AND Status = 'Ready'"
+    query3 = f"UPDATE Customer SET Status = 'eating' WHERE Phone_number = %s"
+    self.cursor.execute(query2, (phone_number,))
+    self.cursor.execute(query3, (phone_number,))
+    messagebox.showinfo("Order has been served!", "Successfully Updated Order")
+    self.db.commit()
+
+def unseat_customer(self, phone_number):
+    query = f"SELECT * FROM Customer WHERE Phone_number = %s AND Status = 'eating'"
+    self.cursor.execute(query, (phone_number,))
+    result = self.cursor.fetchone()
+    if not result:
+        messagebox.showinfo("Customer not found!", "Check if the phone number is valid")
+        return
+    query2 = f"UPDATE Customer SET Status = 'paying', Cus_Table_no = NULL WHERE Phone_number = %s"
+    query3 = f"UPDATE Table_Details SET Status = 'Available' WHERE Table_no = (SELECT Cus_Table_no FROM Customer WHERE Phone_number = %s AND Cus_Table_no IS NOT NULL)"
+    self.cursor.execute(query3, (phone_number,))
+    self.cursor.execute(query2, (phone_number,))
+    messagebox.showinfo("Table has been set to available!", "Successfully Updated Table")
+    self.db.commit()
