@@ -179,11 +179,12 @@ def view_table(self, table_name):
     # Create new window
     new_win = tk.Toplevel(self.root)
     new_win.title(f"{table_name} View")
-    new_win.geometry("800x600")
 
     # Get the list of columns from the chosen table
     self.cursor.execute(f"DESCRIBE `{table_name}`")
     columns = self.cursor.fetchall()
+
+    new_win.geometry(f"{len(columns)*200+50}x300")
 
     # Create the Treeview widget
     tree = ttk.Treeview(new_win)
