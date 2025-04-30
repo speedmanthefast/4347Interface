@@ -56,6 +56,7 @@ class Restaurant:
     view_table = commands.view_table
     add_customer = commands.add_customer
     lookup_customer = commands.lookup_customer
+    seat_customer = commands.seat_customer
     process_transaction = commands.process_transaction
 
     display_CRUD_add = display.display_CRUD_add
@@ -65,6 +66,7 @@ class Restaurant:
     display_customer_lookup = display.display_customer_lookup
     display_main_screen = display.display_main_screen
     display_process_transaction=display.display_process_transaction
+    display_seat_customer = display.display_seat_customer
 
     def display_item(self, func, row=None, col=1):
         if row is None:

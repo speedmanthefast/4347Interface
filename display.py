@@ -85,6 +85,22 @@ def display_customer_lookup(self, row, col):
 def display_process_transaction(self, row, col):
     tk.Button(self.root, text="Begin", command=lambda: self.process_transaction()).grid(row=row, column=col, columnspan=3)
 
+def display_seat_customer(self, row, col):
+    phone_label = tk.Label(self.root, text="Phone Number:").grid(row=row, column=col)
+    phone_entry = tk.Entry(self.root)
+    phone_entry.grid(row=row, column=col+1)
+    def submit():
+        phone = phone_entry.get()
+        query = "SELECT * FROM Customer WHERE Phone_number = %s"
+        self.cursor.execute(query, (phone,))
+        result = self.cursor.fetchone()
+        if result:
+            self.seat_customer(phone)
+        else:
+            messagebox.showinfo("Customer Not Found")
+
+    tk.Button(self.root, text="Search", command=submit).grid(row=row, column=col+2)
+
 def display_main_screen(self):
     self.display_weight_col(0)
     self.display_weight_col(5)
@@ -100,4 +116,7 @@ def display_main_screen(self):
     self.display_pad_row()
     self.display_heading("Process Transaction")
     self.display_item(display_process_transaction)
+    self.display_pad_row()
+    self.display_heading("Seat Customer")
+    self.display_item(display_seat_customer)
     self.display_weight_row(weight=2)

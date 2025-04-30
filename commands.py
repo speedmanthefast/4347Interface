@@ -340,3 +340,61 @@ def process_transaction(self):
     phonenoEntry = tk.Entry(new_win)
     phonenoEntry.pack()
     tk.Button(new_win, text="View Orders by Phone Number", command=lambda: view(phonenoEntry.get())).pack()
+
+def seat_customer(self, phone_num):
+
+    # View tables by availability
+    table_name = 'Table_Details'
+
+    # Create new window
+    new_win = tk.Toplevel(self.root)
+    new_win.title(f"{table_name} View")
+    new_win.geometry("800x600")
+
+    # Get the list of columns from the chosen table
+    self.cursor.execute(f"DESCRIBE `{table_name}`")
+    columns = self.cursor.fetchall()
+
+    # Create the Treeview widget
+    tree = ttk.Treeview(new_win)
+    tree.pack(padx=20, pady=20)
+
+    col_names_list = []
+    for col in columns:
+        col_names_list.append(col[0])
+
+    tree["columns"] = col_names_list
+    tree["show"] = "headings"
+
+    for name in col_names_list:
+        tree.heading(name, text=name)
+
+    self.cursor.execute(f"SELECT * FROM `{table_name}` WHERE Status = 'Available'")
+    rows = self.cursor.fetchall()
+
+    for row in rows:
+        tree.insert("", "end", values=row)
+
+
+    # Seat customer at table
+    tk.Label(new_win, text="Enter Table Numer").pack()
+    tablenoEntry = tk.Entry(new_win)
+    tablenoEntry.pack()
+
+    def seat(table_no):
+        self.cursor.execute(f"UPDATE Customer SET Cus_Table_no = {table_no}, Status = 'seated' WHERE Phone_number = {phone_num}")
+        self.cursor.execute(f"UPDATE Table_Details SET Status = 'Occupied', Seating_Capacity = Seating_Capacity + 1 WHERE Table_no = {table_no}")
+        messagebox.showinfo("Customer Seated!", "Successfully Updated Customer and Table_Details")
+        new_win.destroy()
+
+    tk.Button(new_win, text="Seat Customer", command=lambda: seat(tablenoEntry.get())).pack()
+
+
+def take_order(self):
+    return None
+def cook_food(self):
+    return None
+def serve_order(self):
+    return None
+def clean_table(self):
+    return None
